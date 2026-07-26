@@ -1,19 +1,60 @@
 @import "tailwindcss";
 
+:root {
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --surface-raised: #f4f2f0;
+  --border: rgba(24, 24, 27, 0.1);
+  --border-strong: rgba(24, 24, 27, 0.18);
+  --text: #18181b;
+  --text-muted: rgba(24, 24, 27, 0.62);
+  --text-faint: rgba(24, 24, 27, 0.4);
+  --accent: #ff6600;
+  --accent-strong: #c24500;
+  --accent-hover: #e05500;
+  --accent-tint: rgba(194, 69, 0, 0.08);
+  --selection-bg: rgba(255, 102, 0, 0.25);
+}
+
+:root[data-theme="dark"] {
+  --bg: #000000;
+  --surface: #131313;
+  --surface-raised: #1b1b1b;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --text: #e2e2e2;
+  --text-muted: rgba(226, 226, 226, 0.62);
+  --text-faint: rgba(226, 226, 226, 0.4);
+  --accent: #ff6600;
+  --accent-strong: #ff6600;
+  --accent-hover: #e05500;
+  --accent-tint: rgba(255, 102, 0, 0.1);
+  --selection-bg: rgba(255, 102, 0, 0.3);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-tint: var(--accent-tint);
+}
+
 @layer utilities {
-  .font-syne, .font-playfair, .font-headline-serif, .font-outfit {
+  .font-outfit {
     font-family: 'Outfit', -apple-system, sans-serif;
     letter-spacing: -0.025em;
   }
-  
+
   .font-jakarta, .font-inter {
     font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  }
-
-  .font-mono {
-    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-    font-variant-numeric: tabular-nums lining-nums;
-    font-feature-settings: "tnum", "lnum";
   }
 
   .tabular-nums {
@@ -22,21 +63,19 @@
   }
 }
 
-:root {
-  --color-primary-neon: #FF6600;
-  --color-primary-pink: #ffb380;
-  --color-secondary-purple: #ff8800;
-  --color-surface-dark: #131313;
-  --color-card-bg: rgba(25, 25, 25, 0.8);
-}
-
 body {
-  background-color: #000000;
-  color: #e2e2e2;
+  background-color: var(--bg);
+  color: var(--text);
   font-family: 'Plus Jakarta Sans', sans-serif;
   overflow-x: hidden;
   min-height: 100vh;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--text);
 }
 
 html {
@@ -60,8 +99,7 @@ section {
   height: 2px;
   bottom: -4px;
   left: 50%;
-  background: #FF6600;
-  box-shadow: 0 0 8px #FF6600;
+  background: var(--accent);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   transform: translateX(-50%);
   border-radius: 2px;
@@ -73,47 +111,27 @@ section {
 }
 
 .nav-link-item.active {
-  color: #FF6600;
-}
-
-.font-headline-serif {
-  font-family: 'Playfair Display', serif;
+  color: var(--accent-strong);
 }
 
 .cinematic-glow {
-  background: radial-gradient(circle at center, rgba(255, 102, 0, 0.25) 0%, rgba(255, 136, 0, 0.1) 40%, rgba(0, 0, 0, 0) 70%);
-}
-
-.neon-accent {
-  color: #FF6600;
-  text-shadow: 0 0 12px rgba(255, 102, 0, 0.6), 0 0 20px rgba(255, 102, 0, 0.3);
-}
-
-.neon-text-glow {
-  text-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
+  background: radial-gradient(circle at center, rgba(255, 102, 0, 0.22) 0%, rgba(255, 136, 0, 0.08) 40%, rgba(0, 0, 0, 0) 70%);
 }
 
 .glass-card {
-  background: rgba(25, 25, 25, 0.75);
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.glass-nav {
-  background: rgba(19, 19, 19, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
 }
 
 .btn-primary-glow {
-  box-shadow: 0 0 15px rgba(255, 102, 0, 0.4);
+  box-shadow: 0 0 15px rgba(255, 102, 0, 0.35);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-primary-glow:hover {
-  box-shadow: 0 0 28px rgba(255, 102, 0, 0.75);
+  box-shadow: 0 0 28px rgba(255, 102, 0, 0.6);
 }
 
 .hide-scrollbar {
@@ -130,23 +148,14 @@ section {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0d0d0d;
+  background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
+  background: var(--border-strong);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF6600;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.05); }
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 6s ease-in-out infinite;
+  background: var(--accent);
 }
 
 @keyframes marquee {
@@ -161,7 +170,32 @@ section {
 }
 
 .carousel-mask {
-  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 18%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 18%, black 92%, transparent);
 }
 
+/* Pull the fades further toward the centre on wider screens so fewer cards
+   are fully visible at once. Narrow screens keep the 8%/92% stops — the
+   strip is only a card or two wide there and a deeper fade would swallow it. */
+@media (min-width: 1024px) {
+  .carousel-mask {
+    mask-image: linear-gradient(to right, transparent, black 22%, black 78%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 22%, black 78%, transparent);
+  }
+}
+
+@media (min-width: 1536px) {
+  .carousel-mask {
+    mask-image: linear-gradient(to right, transparent, black 30%, black 70%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 30%, black 70%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
