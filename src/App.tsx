@@ -54,15 +54,18 @@ export default function App() {
 
         <Footer />
 
-        {/* Sticky mobile CTA — keeps the primary action thumb-reachable */}
-        <div className="md:hidden fixed bottom-0 inset-x-0 z-40 p-3 bg-bg/90 backdrop-blur-md border-t border-border">
-          <button
-            onClick={() => scrollTo('contact')}
-            className="w-full bg-accent hover:bg-accent-hover text-white font-inter text-sm uppercase tracking-widest font-bold min-h-11 rounded-xl btn-primary-glow active:scale-95 transition-all"
-          >
-            Contact
-          </button>
-        </div>
+        {/* Sticky mobile CTA — keeps the primary action thumb-reachable, hidden
+            once the contact section (with its own CTA) is already in view */}
+        {activeSection !== 'contact' && (
+          <div className="md:hidden fixed bottom-0 inset-x-0 z-40 p-3 bg-bg/90 backdrop-blur-md border-t border-border">
+            <button
+              onClick={() => scrollTo('contact')}
+              className="w-full bg-accent hover:bg-accent-hover text-white font-inter text-sm uppercase tracking-widest font-bold min-h-11 rounded-xl btn-primary-glow active:scale-95 transition-all"
+            >
+              Contact
+            </button>
+          </div>
+        )}
 
         <ScrollToTopButton />
       </div>

@@ -1,8 +1,58 @@
-import React from "react";
-import { Star, Quote, TrendingUp, Sparkles } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Quote } from "lucide-react";
 import { TESTIMONIALS } from "../data/testimonials";
 
 export const TestimonialsSection: React.FC = () => {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Track which card is nearest the scroller's left edge once scrolling
+  // settles (mobile carousel only — md+ is a static grid). Debouncing until
+  // motion stops avoids flickering between adjacent cards mid-scroll.
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    let debounceId: ReturnType<typeof setTimeout>;
+    const updateActiveIndex = () => {
+      const scrollerLeft = scroller.getBoundingClientRect().left;
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+      cardRefs.current.forEach((card, index) => {
+        if (!card) return;
+        const distance = Math.abs(
+          card.getBoundingClientRect().left - scrollerLeft,
+        );
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+      setActiveIndex(closestIndex);
+    };
+
+    const onScroll = () => {
+      clearTimeout(debounceId);
+      debounceId = setTimeout(updateActiveIndex, 100);
+    };
+
+    updateActiveIndex();
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      clearTimeout(debounceId);
+      scroller.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
+  const scrollToIndex = (index: number) => {
+    cardRefs.current[index]?.scrollIntoView({
+      behavior: "smooth",
+      inline: "start",
+      block: "nearest",
+    });
+  };
+
   return (
     <section
       id="reviews"
@@ -18,52 +68,43 @@ export const TestimonialsSection: React.FC = () => {
           </h2>
         </div>
 
-        <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-none md:grid md:grid-cols-3 md:snap-none">
-          {TESTIMONIALS.map((item) => (
+        <div
+          ref={scrollerRef}
+          className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-none md:grid md:grid-cols-3 md:snap-none"
+        >
+          {TESTIMONIALS.map((item, index) => (
             <div
               key={item.id}
-              className="min-w-[85vw] sm:min-w-[320px] md:min-w-0 snap-center bg-surface p-8 rounded-2xl border-t-4 border-t-accent border-x border-b border-border flex flex-col justify-between shadow-2xl hover:border-border-strong transition-all duration-300"
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
+              className="min-w-[85vw] sm:min-w-[320px] md:min-w-0 snap-center bg-surface p-8 rounded-2xl border-t-4 border-t-accent border-x border-b border-border  hover:border-border-strong transition-all duration-300"
             >
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex gap-1">
-                    {[...Array(item.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-4 h-4 fill-accent text-accent"
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs font-bold text-white bg-accent px-3 py-1 rounded-full flex items-center gap-1.5 tabular-nums">
-                    <TrendingUp className="w-3.5 h-3.5" />
-                    {item.metric}
-                  </span>
-                </div>
-
-                <Quote className="w-9 h-9 text-accent opacity-40 mb-3" />
-
-                <p className="italic text-text font-medium text-base sm:text-lg mb-8 leading-relaxed font-inter">
-                  "{item.quote}"
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3.5 pt-5 border-t border-border">
-                <div className="w-11 h-11 rounded-full bg-accent text-white flex items-center justify-center font-black font-outfit text-lg shrink-0">
-                  {item.clientName.charAt(0)}
-                </div>
-                <div>
-                  <p className="font-extrabold text-base text-text font-inter tracking-wide">
-                    {item.clientName}
-                  </p>
-                  <p className="text-xs text-text-muted font-inter font-medium">
-                    {item.clientRole},{" "}
-                    <span className="text-accent-strong">{item.company}</span>
-                  </p>
-                </div>
-              </div>
+              <Quote className="w-9 h-9 text-accent opacity-40 mb-3" />
+              <p className="text-text font-medium text-base sm:text-lg leading-relaxed font-inter whitespace-pre-line">
+                {item.quote}
+              </p>
             </div>
           ))}
         </div>
+
+        {TESTIMONIALS.length > 1 && (
+          <div className="flex justify-center gap-2 mt-2 md:hidden">
+            {TESTIMONIALS.map((item, index) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToIndex(index)}
+                aria-label={`Go to testimonial ${index + 1}`}
+                aria-current={index === activeIndex}
+                className={`h-2.5 rounded-full transition-all ${
+                  index === activeIndex
+                    ? "w-8 bg-accent"
+                    : "w-2.5 bg-border-strong hover:bg-text-faint"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

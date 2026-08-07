@@ -1,32 +1,48 @@
-import { TestimonialItem } from '../types';
+import { TestimonialItem } from "../types";
 
-// PLACEHOLDER — REPLACE with real client testimonials before launch.
 export const TESTIMONIALS: TestimonialItem[] = [
   {
-    id: 'test-1',
-    quote: 'Akrem completely transformed our TikTok and Reels strategy. Retention doubled in weeks.',
-    clientName: 'Marcus Chen',
-    clientRole: 'Marketing Director',
-    company: 'Apex Digital',
-    rating: 5,
-    metric: '+300% Reach',
+    id: "test-1",
+    quote: `5idma mizyena barcha akrim w qulité tal3it kima n7ib w akthir Merci 3lik 5ouya
+    W ya3tik saha hh tawalt belik m3yaa zeda hhh`,
   },
   {
-    id: 'test-2',
-    quote: 'Our go-to editor for performance ads. His hook variations dropped our CPA fast.',
-    clientName: 'Sarah Jenkins',
-    clientRole: 'E-commerce Founder',
-    company: 'Lumina Brand',
-    rating: 5,
-    metric: '4.2x Avg ROAS',
+    id: "test-2",
+    quote: `Kml akrem kml good luck 👍`,
   },
   {
-    id: 'test-3',
-    quote: '24-hour turnaround, great communication, and sharp attention to sound and captions.',
-    clientName: 'David Kolar',
-    clientRole: 'Content Creator',
-    company: '1.5M Followers',
-    rating: 5,
-    metric: '24h Delivery',
+    id: "test-3",
+    quote: `Hayel Hayel Hayel 👏👏👏👏👏`,
+  },
+  {
+    id: "test-4",
+    quote: `Bravooo 👏👏
+    kml`,
+  },
+  {
+    id: "test-5",
+    quote: `Mara hedhi kaada nra fi khedma tayara
+    Farhana barcha tw win bdit nra f1 skills mtaek belha9
+`,
+  },
+  {
+    id: "test-6",
+    quote: `Bellahi bech nes2lek
+    YYh
+    Chbik moch nrml fel montage sahbi hahaha`,
+  },
+  {
+    id: "test-7",
+    quote: `C'est tellement parfait akreem ❤
+    Yaatik essaha khedmaa mezyeena aalekher ❤`,
+  },
+  {
+    id: "test-8",
+    quote: `Tbarkallah aalik bro`,
+  },
+  {
+    id: "test-9",
+    quote: `Snn vidéo mezien barcha rabi ybareklek w yaatk saha akrem
+    Ajbetni 5dma nchalh bthn rabi bch nkmlou maa baathna`,
   },
 ];

@@ -61,6 +61,15 @@
     font-variant-numeric: tabular-nums lining-nums;
     font-feature-settings: "tnum", "lnum";
   }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 body {

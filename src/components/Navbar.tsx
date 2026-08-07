@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Menu, X, Film, Sun, Moon } from 'lucide-react';
+import React from 'react';
+import { Briefcase, MessageSquareQuote, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../theme';
 
 interface NavbarProps {
@@ -8,32 +8,34 @@ interface NavbarProps {
 }
 
 const NAV_LINKS = [
-  { label: 'Work', href: '#projects', id: 'projects' },
-  { label: 'Reviews', href: '#reviews', id: 'reviews' },
+  { label: 'Work', href: '#projects', id: 'projects', icon: Briefcase },
+  { label: 'Reviews', href: '#reviews', id: 'reviews', icon: MessageSquareQuote },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({ onContact, activeSection }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setIsMobileMenuOpen(false);
     document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <nav className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 w-[92%] sm:w-[90%] max-w-5xl z-50">
-      <div className="glass-card rounded-full px-5 sm:px-6 py-3 shadow-2xl flex items-center justify-between gap-4">
+      <div className="glass-card rounded-full pl-3 pr-2 sm:px-6 py-3 shadow-2xl flex items-center justify-between gap-2 sm:gap-4">
         <a
           href="#hero"
           onClick={(e) => handleNavClick(e, '#hero')}
           className="flex items-center gap-2.5 shrink-0"
         >
-          <div className="p-2 rounded-full bg-accent text-white">
-            <Film className="w-4 h-4" />
-          </div>
-          <span className="font-outfit text-base sm:text-lg font-black text-text tracking-wider leading-none uppercase">
+          <img
+            src="/icon-website.png"
+            alt=""
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+          <span className="font-outfit text-sm sm:text-lg font-black text-text tracking-wider leading-none uppercase whitespace-nowrap">
             AKREM<span className="text-accent-strong">MAARFI</span>
           </span>
         </a>
@@ -56,6 +58,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onContact, activeSection }) => {
           </ul>
         </div>
 
+        <div className="md:hidden flex items-center gap-1">
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.id}
+              href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
+              aria-label={link.label}
+              className={`w-11 h-11 flex items-center justify-center rounded-full transition-colors ${
+                activeSection === link.id
+                  ? 'bg-accent-tint text-accent-strong'
+                  : 'text-text-muted hover:bg-accent-tint hover:text-text'
+              }`}
+            >
+              <link.icon className="w-5 h-5" />
+            </a>
+          ))}
+        </div>
+
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={toggleTheme}
@@ -72,46 +92,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onContact, activeSection }) => {
           >
             Contact
           </button>
-
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden w-11 h-11 flex items-center justify-center text-text rounded-full hover:bg-accent-tint transition-colors"
-            aria-label="Toggle menu"
-            aria-expanded={isMobileMenuOpen}
-          >
-            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
       </div>
-
-      {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 mt-3 p-4 rounded-3xl glass-card shadow-2xl flex flex-col gap-2">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.id}
-              href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              className={`font-inter text-xs uppercase tracking-widest font-bold min-h-11 px-4 rounded-xl flex items-center transition-all ${
-                activeSection === link.id
-                  ? 'bg-accent-tint text-accent-strong'
-                  : 'text-text-muted hover:bg-accent-tint hover:text-text'
-              }`}
-            >
-              {link.label}
-            </a>
-          ))}
-
-          <button
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              onContact();
-            }}
-            className="w-full bg-accent hover:bg-accent-hover text-white font-inter text-xs uppercase tracking-widest font-bold min-h-11 rounded-xl btn-primary-glow mt-1"
-          >
-            Contact
-          </button>
-        </div>
-      )}
     </nav>
   );
 };

@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { Play, Eye } from 'lucide-react';
 import { toNoCookieUrl, getYouTubeThumbnail, isYouTubeUrl } from '../lib/youtube';
 
@@ -10,6 +10,8 @@ interface ShowreelPlayerProps {
   views?: string;
   client?: string;
   className?: string;
+  /** Skip the viewport-entry gate and mount immediately — for the first video. */
+  priority?: boolean;
 }
 
 function PlayerFallback() {
@@ -22,8 +24,55 @@ export const ShowreelPlayer: React.FC<ShowreelPlayerProps> = ({
   views,
   client,
   className = '',
+  priority = false,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasEnteredView, setHasEnteredView] = useState(priority);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Thumbnails render as CSS background-images, not <img>, so the browser
+  // can't lazy-load them natively — every card would fetch its thumbnail
+  // immediately on mount. Defer mounting the player (and its thumbnail
+  // fetch) until the card is about to scroll into view.
+  useEffect(() => {
+    if (hasEnteredView) return;
+
+    const node = containerRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setHasEnteredView(true);
+      },
+      { rootMargin: '600px 0px' }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasEnteredView]);
+
+  // Pause once the card scrolls out of view (mobile carousel / long scroll) or
+  // the tab loses focus — playback shouldn't keep running off-screen.
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const node = containerRef.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) setIsPlaying(false);
+      },
+      { threshold: 0.4 }
+    );
+    if (node) observer.observe(node);
+
+    const onVisibilityChange = () => {
+      if (document.hidden) setIsPlaying(false);
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [isPlaying]);
 
   if (!url) {
     return (
@@ -37,25 +86,28 @@ export const ShowreelPlayer: React.FC<ShowreelPlayerProps> = ({
   const thumbnail = isYouTubeUrl(url) ? getYouTubeThumbnail(url) : undefined;
 
   return (
-    <div className={`aspect-9/16 ${className} relative rounded-2xl overflow-hidden bg-black`}>
-      <Suspense fallback={<PlayerFallback />}>
-        <ReactPlayer
-          src={playableUrl}
-          title={title}
-          width="100%"
-          height="100%"
-          controls
-          playing={isPlaying}
-          playsInline
-          onClickPreview={() => setIsPlaying(true)}
-          light={thumbnail ?? true}
-          playIcon={
-            <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center shadow-xl shadow-accent/40">
-              <Play className="w-7 h-7 fill-current ml-1" />
-            </div>
-          }
-        />
-      </Suspense>
+    <div ref={containerRef} className={`aspect-9/16 ${className} relative rounded-2xl overflow-hidden bg-black`}>
+      {hasEnteredView && (
+        <Suspense fallback={<PlayerFallback />}>
+          <ReactPlayer
+            src={playableUrl}
+            title={title}
+            width="100%"
+            height="100%"
+            controls
+            playing={isPlaying}
+            playsInline
+            onClickPreview={() => setIsPlaying(true)}
+            light={thumbnail ?? true}
+            playIcon={
+              <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center shadow-xl shadow-accent/40">
+                <Play className="w-7 h-7 fill-current ml-1" />
+              </div>
+            }
+          />
+        </Suspense>
+      )}
+      {!hasEnteredView && <PlayerFallback />}
 
       {/* Reels-style info overlay — hidden once playback starts */}
       {!isPlaying && (

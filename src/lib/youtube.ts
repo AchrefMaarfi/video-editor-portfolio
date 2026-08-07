@@ -25,5 +25,5 @@ export function toNoCookieUrl(url: string): string {
 // skips its default oEmbed fetch to noembed.com entirely.
 export function getYouTubeThumbnail(url: string): string | undefined {
   const id = getYouTubeId(url);
-  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : undefined;
+  return id ? `https://i.ytimg.com/vi/${id}/sddefault.jpg` : undefined;
 }
