@@ -1,6 +1,7 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useId, useRef, useState } from 'react';
 import { Play, Eye } from 'lucide-react';
 import { toNoCookieUrl, getYouTubeThumbnail, isYouTubeUrl } from '../lib/youtube';
+import { setActivePlayer, subscribeActivePlayer, clearActivePlayerIfSelf } from '../lib/activePlayer';
 
 const ReactPlayer = lazy(() => import('../lib/player'));
 
@@ -12,6 +13,7 @@ interface ShowreelPlayerProps {
   className?: string;
   /** Skip the viewport-entry gate and mount immediately — for the first video. */
   priority?: boolean;
+  orientation?: "portrait" | "landscape";
 }
 
 function PlayerFallback() {
@@ -25,10 +27,30 @@ export const ShowreelPlayer: React.FC<ShowreelPlayerProps> = ({
   client,
   className = '',
   priority = false,
+  orientation = 'portrait',
 }) => {
+  const aspectClass = orientation === 'landscape' ? 'aspect-video' : 'aspect-9/16';
+  const playerId = useId();
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasEnteredView, setHasEnteredView] = useState(priority);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Pause this player whenever a different one becomes the active (playing) one.
+  useEffect(() => {
+    return subscribeActivePlayer((activeId) => {
+      if (activeId !== playerId) setIsPlaying(false);
+    });
+  }, [playerId]);
+
+  const play = () => {
+    setActivePlayer(playerId);
+    setIsPlaying(true);
+  };
+
+  const pause = () => {
+    setIsPlaying(false);
+    clearActivePlayerIfSelf(playerId);
+  };
 
   // Thumbnails render as CSS background-images, not <img>, so the browser
   // can't lazy-load them natively — every card would fetch its thumbnail
@@ -57,14 +79,14 @@ export const ShowreelPlayer: React.FC<ShowreelPlayerProps> = ({
     const node = containerRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) setIsPlaying(false);
+        if (!entry.isIntersecting) pause();
       },
       { threshold: 0.4 }
     );
     if (node) observer.observe(node);
 
     const onVisibilityChange = () => {
-      if (document.hidden) setIsPlaying(false);
+      if (document.hidden) pause();
     };
     document.addEventListener('visibilitychange', onVisibilityChange);
 
@@ -76,7 +98,7 @@ export const ShowreelPlayer: React.FC<ShowreelPlayerProps> = ({
 
   if (!url) {
     return (
-      <div className={`aspect-9/16 ${className} flex items-center justify-center bg-surface-raised border border-border rounded-2xl text-text-faint text-xs uppercase tracking-widest text-center px-4`}>
+      <div className={`${aspectClass} ${className} flex items-center justify-center bg-surface-raised border border-border rounded-2xl text-text-faint text-xs uppercase tracking-widest text-center px-4`}>
         Video coming soon
       </div>
     );
@@ -86,7 +108,7 @@ export const ShowreelPlayer: React.FC<ShowreelPlayerProps> = ({
   const thumbnail = isYouTubeUrl(url) ? getYouTubeThumbnail(url) : undefined;
 
   return (
-    <div ref={containerRef} className={`aspect-9/16 ${className} relative rounded-2xl overflow-hidden bg-black`}>
+    <div ref={containerRef} className={`${aspectClass} ${className} relative rounded-2xl overflow-hidden bg-black`}>
       {hasEnteredView && (
         <Suspense fallback={<PlayerFallback />}>
           <ReactPlayer
@@ -97,7 +119,7 @@ export const ShowreelPlayer: React.FC<ShowreelPlayerProps> = ({
             controls
             playing={isPlaying}
             playsInline
-            onClickPreview={() => setIsPlaying(true)}
+            onClickPreview={play}
             light={thumbnail ?? true}
             playIcon={
               <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center shadow-xl shadow-accent/40">

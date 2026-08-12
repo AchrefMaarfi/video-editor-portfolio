@@ -5,6 +5,8 @@ export interface VideoEntry {
   url: string;
   client?: string;
   views?: string;
+  /** Video aspect ratio. Defaults to "portrait" (Shorts/Reels style). */
+  orientation?: "portrait" | "landscape";
 }
 
 export interface VideoCategory {
@@ -45,8 +47,8 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
     id: "company-work",
     title: "Company Work",
     videos: [
-      { id: "cw-17", title: "Company Work Edit 17", url: "https://youtu.be/0t17W2L9qkQ" },
-      { id: "cw-18", title: "Company Work Edit 18", url: "https://youtu.be/h__eT2Bq9fs" },
+      { id: "cw-17", title: "Company Work Edit 17", url: "https://youtu.be/0t17W2L9qkQ", orientation: "landscape" },
+      { id: "cw-18", title: "Company Work Edit 18", url: "https://youtu.be/h__eT2Bq9fs", orientation: "landscape" },
     ],
   },
 ];
