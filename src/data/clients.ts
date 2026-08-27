@@ -53,9 +53,6 @@ export const CLIENTS: ClientItem[] = [
     img: client8,
   },
   { id: "c9", name: "noor.pharmatn", stats: "12K Followers", img: client9 },
-  { id: "c10", name: "Client Ten", stats: "2.8M Views/mo", img: client10 },
-  { id: "c11", name: "Client Eleven", stats: "2.8M Views/mo", img: client11 },
-  { id: "c12", name: "Client twelve", stats: "4.2M Subs", img: client12 },
-  { id: "c13", name: "Aura Herbs", stats: "18K Followers", img: client13 },
-  { id: "c14", name: "Special Two", stats: "TBD Followers", img: client14 },
+  { id: "c10", name: "Aura Herbs", stats: "18K Followers", img: client10 },
+  { id: "c11", name: "Special Two", stats: "TBD Followers", img: client11 },
 ];
