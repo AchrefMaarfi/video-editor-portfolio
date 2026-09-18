@@ -17,9 +17,6 @@ import client8 from "../assets/Images/Clients/client_8.jpg";
 import client9 from "../assets/Images/Clients/client_9.jpg";
 import client10 from "../assets/Images/Clients/client_10.jpg";
 import client11 from "../assets/Images/Clients/client_11.jpg";
-import client12 from "../assets/Images/Clients/client_12.jpg";
-import client13 from "../assets/Images/Clients/client_13.jpg";
-import client14 from "../assets/Images/Clients/client_14.jpg";
 
 export interface ClientItem {
   id: string;
