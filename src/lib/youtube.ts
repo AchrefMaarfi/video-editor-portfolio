@@ -23,7 +23,34 @@ export function toNoCookieUrl(url: string): string {
 
 // Passing a thumbnail URL string (rather than light={true}) to react-player
 // skips its default oEmbed fetch to noembed.com entirely.
+//
+// sddefault.jpg is a legacy 640x480 (4:3) crop — using it for a 16:9 landscape
+// video makes react-player's `background-size: cover` crop the top/bottom off
+// the frame, so the preview reads as "squared" instead of widescreen.
+// maxresdefault.jpg is the true 1280x720 source frame but isn't generated for
+// every video, so it's verified with a preload and hqdefault.jpg (320x180,
+// also true 16:9, always available) is used as the fallback.
 export function getYouTubeThumbnail(url: string): string | undefined {
   const id = getYouTubeId(url);
-  return id ? `https://i.ytimg.com/vi/${id}/sddefault.jpg` : undefined;
+  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : undefined;
+}
+
+/** Best-available 16:9 thumbnail: maxresdefault if it exists, else hqdefault. */
+export function getBestYouTubeThumbnail(url: string): Promise<string | undefined> {
+  const id = getYouTubeId(url);
+  if (!id) return Promise.resolve(undefined);
+
+  const hqUrl = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+  const maxresUrl = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      // YouTube serves a 120x90 grey placeholder for maxresdefault when the
+      // real image doesn't exist, instead of a 404.
+      resolve(img.naturalWidth > 120 ? maxresUrl : hqUrl);
+    };
+    img.onerror = () => resolve(hqUrl);
+    img.src = maxresUrl;
+  });
 }

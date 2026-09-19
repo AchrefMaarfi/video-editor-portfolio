@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useEffect, useId, useRef, useState } from 'react';
 import { Play, Eye } from 'lucide-react';
-import { toNoCookieUrl, getYouTubeThumbnail, isYouTubeUrl } from '../lib/youtube';
+import { toNoCookieUrl, getYouTubeThumbnail, getBestYouTubeThumbnail, isYouTubeUrl } from '../lib/youtube';
 import { setActivePlayer, subscribeActivePlayer, clearActivePlayerIfSelf } from '../lib/activePlayer';
 
 const ReactPlayer = lazy(() => import('../lib/player'));
@@ -29,7 +29,7 @@ export const ShowreelPlayer: React.FC<ShowreelPlayerProps> = ({
   priority = false,
   orientation = 'portrait',
 }) => {
-  const aspectClass = orientation === 'landscape' ? 'aspect-video' : 'aspect-9/16';
+  const aspectClass = orientation === 'landscape' ? 'aspect-square' : 'aspect-9/16';
   const playerId = useId();
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasEnteredView, setHasEnteredView] = useState(priority);
@@ -105,7 +105,22 @@ export const ShowreelPlayer: React.FC<ShowreelPlayerProps> = ({
   }
 
   const playableUrl = isYouTubeUrl(url) ? toNoCookieUrl(url) : url;
-  const thumbnail = isYouTubeUrl(url) ? getYouTubeThumbnail(url) : undefined;
+  const [thumbnail, setThumbnail] = useState(() =>
+    isYouTubeUrl(url) ? getYouTubeThumbnail(url) : undefined,
+  );
+
+  // Upgrade to maxresdefault.jpg (true 16:9) when YouTube has generated one —
+  // hqdefault.jpg above is the immediate, always-available fallback.
+  useEffect(() => {
+    if (!isYouTubeUrl(url)) return;
+    let cancelled = false;
+    getBestYouTubeThumbnail(url).then((best) => {
+      if (!cancelled && best) setThumbnail(best);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [url]);
 
   return (
     <div ref={containerRef} className={`${aspectClass} ${className} relative rounded-2xl overflow-hidden bg-black`}>

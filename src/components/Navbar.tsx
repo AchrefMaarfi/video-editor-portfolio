@@ -44,7 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onContact, activeSection }) => {
             className="w-8 h-8 rounded-full object-cover"
           />
           <span className="font-outfit text-sm sm:text-lg font-black text-text tracking-wider leading-none uppercase whitespace-nowrap">
-            AKREM<span className="text-accent-strong"> M</span>
+            AKREM<span className="text-accent-strong">.M</span>
           </span>
         </a>
 

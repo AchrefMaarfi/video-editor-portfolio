@@ -126,7 +126,7 @@ export const VideoCarousel: React.FC<VideoCarouselProps> = ({
             }}
             className={
               video.orientation === "landscape"
-                ? "shrink-0 w-[85vw] sm:w-[60vw] md:w-[42vw] lg:w-[32vw] max-w-lg snap-start"
+                ? "shrink-0 w-[85vw] sm:w-[60vw] md:w-[42vw] lg:w-[32vw] max-w-lg snap-center my-auto"
                 : "shrink-0 w-[68vw] sm:w-[45vw] md:w-[30vw] lg:w-[22vw] max-w-xs snap-start"
             }
           >

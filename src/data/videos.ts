@@ -23,42 +23,52 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
       {
         id: "th-1",
         title: "Talking Heads Edit 1",
-        url: "https://youtu.be/8_sWFbQDtdU",
+        url: "https://youtu.be/kKHyAYzUxco",
+        orientation: "landscape",
       },
       {
         id: "th-2",
         title: "Talking Heads Edit 2",
-        url: "https://youtu.be/hcBCBSky0F8",
+        url: "https://youtu.be/9Qg9XkgHFyc",
       },
       {
         id: "th-3",
         title: "Talking Heads Edit 3",
-        url: "https://youtu.be/CuSdw3G1a2k",
+        url: "https://youtu.be/8_sWFbQDtdU",
       },
-
+      {
+        id: "th-4",
+        title: "Talking Heads Edit 4",
+        url: "https://youtu.be/hcBCBSky0F8",
+      },
       {
         id: "th-5",
         title: "Talking Heads Edit 5",
-        url: "https://youtu.be/s08GZBes6BU",
+        url: "https://youtu.be/CuSdw3G1a2k",
       },
       {
         id: "th-6",
         title: "Talking Heads Edit 6",
-        url: "https://youtu.be/UYgldopKIS8",
+        url: "https://youtu.be/s08GZBes6BU",
       },
       {
         id: "th-7",
         title: "Talking Heads Edit 7",
-        url: "https://youtu.be/fRwO3V26aCA",
+        url: "https://youtu.be/UYgldopKIS8",
       },
       {
         id: "th-8",
         title: "Talking Heads Edit 8",
-        url: "https://youtu.be/95J23NXsBYI",
+        url: "https://youtu.be/fRwO3V26aCA",
       },
       {
         id: "th-9",
         title: "Talking Heads Edit 9",
+        url: "https://youtu.be/95J23NXsBYI",
+      },
+      {
+        id: "th-10",
+        title: "Talking Heads Edit 10",
         url: "https://youtu.be/VmtSpCU76ns",
       },
     ],
