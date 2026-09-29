@@ -83,6 +83,11 @@ export const VIDEO_CATEGORIES: VideoCategory[] = [
         url: "https://youtu.be/dgUsTpaDjp0?si=Pn7UIJ2MqAhGwI9C",
       },
       {
+        id: "ef-11",
+        title: "Ecom Faceless Edit 11",
+        url: "https://youtu.be/Kd54VW0KQ0c?si=vFUmH-Jtr-poFgHN",
+      },
+      {
         id: "ef-12",
         title: "Ecom Faceless Edit 12",
         url: "https://youtube.com/shorts/WQEajn3zCOA",
